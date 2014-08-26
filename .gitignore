@@ -1,7 +1,7 @@
-.gradle
+*.gradle
 /DatabaseBusinessSlagelse/local.properties
 /DatabaseBusinessSlagelse/.idea/workspace.xml
 /DatabaseBusinessSlagelse/.idea/libraries
-.DS_Store
-/DatabaseBusinessSlagelse/build
-/DatabaseBusinessSlagelse/app
+/DatabaseBusinessSlagelse/build/*
+/DatabaseBusinessSlagelse/app/*
+*.apk
