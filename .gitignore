@@ -1,6 +1,6 @@
 .gradle
-/DBS/local.properties
-/DBS/.idea/workspace.xml
-/DBS/.idea/libraries
+/DatabaseBusinessSlagelse/local.properties
+/DatabaseBusinessSlagelse/.idea/workspace.xml
+/DatabaseBusinessSlagelse/.idea/libraries
 .DS_Store
-/DBS/build
+/DatabaseBusinessSlagelse/build
