@@ -9,13 +9,13 @@ import android.widget.ArrayAdapter;
 /**
  * Created by Patrick on 25-08-2014.
  */
-public abstract class ArrayAdapter<DATATYPE extends Data> extends android.widget.ArrayAdapter<DATATYPE> {
+public abstract class ArrayAdapter_AS<DATATYPE extends Data> extends android.widget.ArrayAdapter<DATATYPE> {
 
     protected Context context;
     protected Register<DATATYPE> register;
     protected int viewActivity;
 
-    public ArrayAdapter(Context context, int viewActivity, Register<DATATYPE> register) {
+    public ArrayAdapter_AS(Context context, int viewActivity, Register<DATATYPE> register) {
         super(context, viewActivity, register.getObjects());
         this.register = register;
         this.context = context;

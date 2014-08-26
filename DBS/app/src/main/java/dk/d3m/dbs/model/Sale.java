@@ -13,17 +13,15 @@ public class Sale extends Data {
     private double price;
     private Date start;
     private Date end;
-    private Date publish;
 
-    public Sale(int id, int updateNumber, String name, String description, Picture picture, double price, Date start, Date end, Date publish) {
-        super(id, updateNumber);
+    public Sale(int id, String name, String description, Picture picture, double price, Date start, Date end) {
+        super(id);
         this.name = name;
         this.description = description;
         this.picture = picture;
         this.price = price;
         this.start = start;
         this.end = end;
-        this.publish = publish;
     }
 
     public String getName() {
@@ -74,17 +72,9 @@ public class Sale extends Data {
         this.end = end;
     }
 
-    public Date getPublish() {
-        return publish;
-    }
-
-    public void setPublish(Date publish) {
-        this.publish = publish;
-    }
-
     @Override
     public String toString() {
-        String s = "name: " + name + " description: " + description + " picture: " + picture + " price: " + price + " start: " + start.toString() + " end: " + end.toString() + " publish: " + publish.toString();
+        String s = "name: " + name + " description: " + description + " picture: " + picture + " price: " + price + " start: " + start.toString() + " end: " + end.toString();
         return s;
     }
 }

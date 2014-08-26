@@ -5,13 +5,27 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONObject;
+
+import dk.d3m.dbs.model.PictureRegister;
+import dk.d3m.dbs.model.SaleRegister;
+import dk.d3m.dbs.networking.ConnectorAsync;
+
 
 public class MainActivity extends Activity {
+
+    private PictureRegister pictureRegister;
+    private SaleRegister saleRegister;
+    private ConnectorAsync connector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        pictureRegister = new PictureRegister();
+        saleRegister = new SaleRegister(pictureRegister);
+        connector = new ConnectorAsync(true, pictureRegister, saleRegister);
     }
 
 
@@ -28,8 +42,10 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.action_settings:
+                connector.getCurrrentUpdateNumber();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

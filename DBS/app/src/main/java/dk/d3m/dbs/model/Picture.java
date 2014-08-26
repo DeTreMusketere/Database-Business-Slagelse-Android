@@ -8,8 +8,8 @@ public class Picture extends Data {
     private String name;
     private byte[] byteArray;
 
-    public Picture(int id, int updateNumber, String name, byte[] byteArray) {
-        super(id, updateNumber);
+    public Picture(int id, String name, byte[] byteArray) {
+        super(id);
         this.name = name;
         this.byteArray = byteArray;
     }

@@ -1,5 +1,8 @@
 package dk.d3m.dbs.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Date;
 
 /**
@@ -7,8 +10,32 @@ import java.util.Date;
  */
 public class SaleRegister extends Register<Sale> {
 
-    public void create(int id, int updateNumber, String name, String description, Picture picture, double price, Date start, Date end, Date publish) {
-        Sale s = new Sale(id, updateNumber, name, description, picture, price, start, end, publish);
+    private PictureRegister pictureRegister;
+
+    public SaleRegister(PictureRegister pictureRegister) {
+        this.pictureRegister = pictureRegister;
+    }
+
+    public void create(int id, String name, String description, Picture picture, double price, Date start, Date end) {
+        Sale s = new Sale(id, name, description, picture, price, start, end);
         insert(s);
+    }
+
+    public void create(JSONObject obj) {
+        try {
+            int id = obj.getInt("id");
+            String name = obj.getString("name");
+            String description = obj.getString("description");
+            int pictureId = obj.getInt("picture");
+            Picture picture = pictureRegister.get(pictureId);
+            double price = obj.getDouble("price");
+            Date start = new Date(obj.getLong("start"));
+            Date end = new Date(obj.getLong("end"));
+
+            Sale s = new Sale(id, name, description, picture, price, start, end);
+            insert(s);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
