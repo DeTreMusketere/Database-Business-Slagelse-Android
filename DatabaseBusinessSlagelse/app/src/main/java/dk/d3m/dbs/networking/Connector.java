@@ -35,8 +35,8 @@ public class Connector {
 
     public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.address = prefs.getString("host", "");
-        this.port = Integer.valueOf(prefs.getString("port", ""));
+        this.address = prefs.getString("host", "192.168.0.31");
+        this.port = Integer.valueOf(prefs.getString("port", "6666"));
         this.auto = auto;
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;

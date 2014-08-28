@@ -21,18 +21,20 @@ public class RefreshHandler {
     private Activity context;
     private int localUN = 0;
     private ProgressBar progressBar;
-    protected SharedPreferences prefs;
+    //protected SharedPreferences prefs;
 
     public RefreshHandler(Activity context, PictureRegister pictureRegister, SaleRegister saleRegister) {
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
         this.context = context;
         this.progressBar = (ProgressBar) context.findViewById(R.id.progressBar);
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.localUN = prefs.getInt("localun", 0);
+        //prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //this.localUN = prefs.getInt("localun", 0);
+        this.localUN = 0;
     }
 
     public void refreshContent() {
+        System.out.println("LocalUN: " + localUN);
         RefreshContentAsyncTask r = new RefreshContentAsyncTask();
         r.execute();
     }
@@ -64,7 +66,8 @@ public class RefreshHandler {
                         if (!updated) {
                             return false;
                         } else {
-                            localUN = serverUN;
+                            System.out.println("OPDATERE");
+                            //localUN = serverUN;
                         }
                     } else {
                         return false;
@@ -82,9 +85,9 @@ public class RefreshHandler {
         @Override
         protected void onPostExecute(Boolean b) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt("localun", localUN);
-            editor.commit();
+            //SharedPreferences.Editor editor = prefs.edit();
+            //editor.putInt("localun", localUN);
+            //editor.commit();
             if(!b) {
                 Toast.makeText(context, "Could not refresh content", Toast.LENGTH_SHORT).show();
             }
