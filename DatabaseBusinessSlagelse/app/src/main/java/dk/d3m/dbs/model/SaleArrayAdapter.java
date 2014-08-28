@@ -2,6 +2,7 @@ package dk.d3m.dbs.model;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import dk.d3m.dbs.R;
 
@@ -16,6 +17,11 @@ public class SaleArrayAdapter extends JellyArrayAdapter<Sale> {
 
     @Override
     public void constructRowView(View rowView, Sale object) {
-
+        if(object != null) {
+            TextView name = (TextView) rowView.findViewById(R.id.name);
+            name.setText(object.getName());
+        } else {
+            System.out.println("OBJECT IS NULL");
+        }
     }
 }

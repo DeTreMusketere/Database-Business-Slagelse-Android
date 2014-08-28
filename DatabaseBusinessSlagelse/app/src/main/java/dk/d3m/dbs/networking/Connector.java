@@ -108,14 +108,15 @@ public class Connector {
                 JSONArray JSONSales = null;
                 try {
                     array = new JSONArray(jsonArrayString);
-                    JSONPictures = array.getJSONArray(0);
-                    JSONSales = array.getJSONArray(1);
+                    JSONPictures = array.getJSONArray(1);
+                    JSONSales = array.getJSONArray(0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return false;
                 }
 
                 for(int i = 0; i < JSONPictures.length(); i++) {
+                    System.out.println("Creating picture");
                     try {
                         JSONObject obj = JSONPictures.getJSONObject(i);
                         pictureRegister.create(obj);
@@ -126,6 +127,7 @@ public class Connector {
                 }
 
                 for(int i = 0; i < JSONSales.length(); i++) {
+                    System.out.println("Creating sale");
                     try {
                         JSONObject obj = JSONSales.getJSONObject(i);
                         saleRegister.create(obj);

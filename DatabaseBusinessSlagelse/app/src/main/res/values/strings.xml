@@ -7,4 +7,6 @@
 
     <string name="action_settings">Settings</string>
 
+    <color name="baseColor">#381042</color>
+
 </resources>

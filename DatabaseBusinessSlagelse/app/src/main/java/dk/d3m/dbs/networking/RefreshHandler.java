@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import dk.d3m.dbs.R;
 import dk.d3m.dbs.model.PictureRegister;
+import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
 
 /**
@@ -21,11 +22,13 @@ public class RefreshHandler {
     private Activity context;
     private int localUN = 0;
     private ProgressBar progressBar;
+    private SaleArrayAdapter saleAdapter;
     //protected SharedPreferences prefs;
 
-    public RefreshHandler(Activity context, PictureRegister pictureRegister, SaleRegister saleRegister) {
+    public RefreshHandler(Activity context, PictureRegister pictureRegister, SaleRegister saleRegister, SaleArrayAdapter saleAdapter) {
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
+        this.saleAdapter = saleAdapter;
         this.context = context;
         this.progressBar = (ProgressBar) context.findViewById(R.id.progressBar);
         //prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -85,11 +88,14 @@ public class RefreshHandler {
         @Override
         protected void onPostExecute(Boolean b) {
             progressBar.setVisibility(ProgressBar.INVISIBLE);
-            //SharedPreferences.Editor editor = prefs.edit();
-            //editor.putInt("localun", localUN);
-            //editor.commit();
             if(!b) {
                 Toast.makeText(context, "Could not refresh content", Toast.LENGTH_SHORT).show();
+            } else {
+                //SharedPreferences.Editor editor = prefs.edit();
+                //editor.putInt("localun", localUN);
+                //editor.commit();
+                saleAdapter.notifyDataSetChanged();
+                System.out.println(saleRegister.getObjects().size());
             }
         }
 

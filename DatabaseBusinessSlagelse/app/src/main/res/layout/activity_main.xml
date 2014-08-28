@@ -21,11 +21,17 @@
         android:id="@+id/progressBar" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Get update number"
         android:id="@+id/getUNbtn"
         android:onClick="getUNbtn"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saleListView"
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>

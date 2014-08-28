@@ -15,7 +15,7 @@ public class PictureRegister extends Register<Picture> {
         try {
             int id = obj.getInt("id");
             String name = obj.getString("name");
-            String array = obj.getString("array");
+            String array = obj.getString("picturestring");
             byte[] byteArray = Base64.decode(array, Base64.DEFAULT);
 
             Picture p = new Picture(id, name, byteArray);
