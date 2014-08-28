@@ -22,7 +22,9 @@ public class SaleArrayAdapter extends JellyArrayAdapter<Sale> {
     public void constructRowView(View rowView, Sale object) {
         TextView name = (TextView) rowView.findViewById(R.id.name);
         name.setText(object.getName());
-
+        if(object.getPicture() == null) {
+            System.out.println("PICTURE IS NULL");
+        }
         ImageView image = (ImageView)rowView.findViewById(R.id.image);
         image.setImageBitmap(object.getPicture().getBitmap());
     }
