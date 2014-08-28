@@ -1,5 +1,8 @@
 package dk.d3m.dbs.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 /**
  * Created by Patrick on 25-08-2014.
  */
@@ -28,6 +31,11 @@ public class Picture extends Data {
 
     public void setByteArray(byte[] byteArray) {
         this.byteArray = byteArray;
+    }
+
+    public Bitmap getBitmap() {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        return bitmap;
     }
 
     @Override

@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 
         pictureRegister = new PictureRegister();
         saleRegister = new SaleRegister(pictureRegister);
-        saleAdapter = new SaleArrayAdapter(this, saleRegister);
+        saleAdapter = new SaleArrayAdapter(this, saleRegister.getObjects());
         saleListView = (ListView)findViewById(R.id.saleListView);
         saleListView.setAdapter(saleAdapter);
         refreshHandler = new RefreshHandler(this, pictureRegister, saleRegister, saleAdapter);

@@ -2,7 +2,10 @@ package dk.d3m.dbs.model;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
 
 import dk.d3m.dbs.R;
 
@@ -11,17 +14,16 @@ import dk.d3m.dbs.R;
  */
 public class SaleArrayAdapter extends JellyArrayAdapter<Sale> {
 
-    public SaleArrayAdapter(Context context, Register<Sale> register) {
-        super(context, R.layout.sale_list, register);
+    public SaleArrayAdapter(Context context, List<Sale> objects) {
+        super(context, R.layout.sale_list, objects);
     }
 
     @Override
     public void constructRowView(View rowView, Sale object) {
-        if(object != null) {
-            TextView name = (TextView) rowView.findViewById(R.id.name);
-            name.setText(object.getName());
-        } else {
-            System.out.println("OBJECT IS NULL");
-        }
+        TextView name = (TextView) rowView.findViewById(R.id.name);
+        name.setText(object.getName());
+
+        ImageView image = (ImageView)rowView.findViewById(R.id.image);
+        image.setImageBitmap(object.getPicture().getBitmap());
     }
 }

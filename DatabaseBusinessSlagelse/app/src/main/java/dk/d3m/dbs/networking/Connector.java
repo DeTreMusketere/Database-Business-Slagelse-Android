@@ -74,6 +74,7 @@ public class Connector {
     }
 
     public int getCurrrentUpdateNumber() {
+        System.out.println("Connector: Getting UN");
         int updateNumber = -1;
         if(auto) {
             connect();
@@ -85,10 +86,12 @@ public class Connector {
         if(auto) {
             disconnect();
         }
+        System.out.println("Connector: Finished Getting UN");
         return updateNumber;
     }
 
     public boolean updateRegisters(int updateNumber) {
+        System.out.println("Connector: Updating registers");
         if(auto) {
             connect();
         }
@@ -148,6 +151,7 @@ public class Connector {
             disconnect();
         }
 
+        System.out.println("Connector: Finished Updating registers");
         return true;
     }
 }

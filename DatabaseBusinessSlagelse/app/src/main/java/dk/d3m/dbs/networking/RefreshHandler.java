@@ -46,11 +46,13 @@ public class RefreshHandler {
 
         @Override
         protected void onPreExecute() {
+            System.out.println("RefreshHandler: Running PreExecute");
             progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
+            System.out.println("RefreshHandler: Running DoInBackground");
             Connector connector = new Connector(context, false, pictureRegister, saleRegister);
 
             boolean connected = connector.connect();
@@ -78,7 +80,7 @@ public class RefreshHandler {
                 } else {
                     System.out.println("We are fully updated!");
                 }
-
+                System.out.println("RefreshHandler: Finished DoInBackground");
                 return true;
             } else {
                 return false;
@@ -87,6 +89,7 @@ public class RefreshHandler {
 
         @Override
         protected void onPostExecute(Boolean b) {
+            System.out.println("RefreshHandler: Running PostExecute");
             progressBar.setVisibility(ProgressBar.INVISIBLE);
             if(!b) {
                 Toast.makeText(context, "Could not refresh content", Toast.LENGTH_SHORT).show();
@@ -97,6 +100,7 @@ public class RefreshHandler {
                 saleAdapter.notifyDataSetChanged();
                 System.out.println(saleRegister.getObjects().size());
             }
+            System.out.println("RefreshHandler: Finished PostExecute");
         }
 
     }

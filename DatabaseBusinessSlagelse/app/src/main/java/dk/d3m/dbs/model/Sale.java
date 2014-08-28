@@ -1,5 +1,8 @@
 package dk.d3m.dbs.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.util.Date;
 
 /**
