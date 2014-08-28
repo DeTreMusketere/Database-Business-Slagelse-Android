@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import dk.d3m.dbs.R;
 import dk.d3m.dbs.model.PictureRegister;
+import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
 
@@ -21,23 +23,21 @@ public class RefreshHandler {
     private SaleRegister saleRegister;
     private Activity context;
     private int localUN = 0;
-    private ProgressBar progressBar;
     private SaleArrayAdapter saleAdapter;
-    //protected SharedPreferences prefs;
+    private SwipeRefreshLayout swipeLayout;
+    protected SharedPreferences prefs;
 
-    public RefreshHandler(Activity context, PictureRegister pictureRegister, SaleRegister saleRegister, SaleArrayAdapter saleAdapter) {
-        this.pictureRegister = pictureRegister;
-        this.saleRegister = saleRegister;
+    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter) {
+        this.pictureRegister = RegisterHandler.getPictureRegisterInstance();
+        this.saleRegister = RegisterHandler.getSaleRegisterInstance();
         this.saleAdapter = saleAdapter;
         this.context = context;
-        this.progressBar = (ProgressBar) context.findViewById(R.id.progressBar);
-        //prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        //this.localUN = prefs.getInt("localun", 0);
-        this.localUN = 0;
+        swipeLayout = (SwipeRefreshLayout) context.findViewById(R.id.swipe_container);
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        this.localUN = prefs.getInt("localun", 0);
     }
 
     public void refreshContent() {
-        System.out.println("LocalUN: " + localUN);
         RefreshContentAsyncTask r = new RefreshContentAsyncTask();
         r.execute();
     }
@@ -47,13 +47,12 @@ public class RefreshHandler {
         @Override
         protected void onPreExecute() {
             System.out.println("RefreshHandler: Running PreExecute");
-            progressBar.setVisibility(ProgressBar.VISIBLE);
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             System.out.println("RefreshHandler: Running DoInBackground");
-            Connector connector = new Connector(context, false, pictureRegister, saleRegister);
+            Connector connector = new Connector(context, false);
 
             boolean connected = connector.connect();
             if(connected) {
@@ -72,7 +71,7 @@ public class RefreshHandler {
                             return false;
                         } else {
                             System.out.println("OPDATERE");
-                            //localUN = serverUN;
+                            localUN = serverUN;
                         }
                     } else {
                         return false;
@@ -90,15 +89,16 @@ public class RefreshHandler {
         @Override
         protected void onPostExecute(Boolean b) {
             System.out.println("RefreshHandler: Running PostExecute");
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
+            swipeLayout.setRefreshing(false);
             if(!b) {
                 Toast.makeText(context, "Could not refresh content", Toast.LENGTH_SHORT).show();
             } else {
-                //SharedPreferences.Editor editor = prefs.edit();
-                //editor.putInt("localun", localUN);
-                //editor.commit();
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("localun", localUN);
+                editor.commit();
                 saleAdapter.notifyDataSetChanged();
-                System.out.println(saleRegister.getObjects().size());
+                System.out.println("Sales: " + saleRegister.getObjects().size());
+                System.out.println("Pictures: " + pictureRegister.getObjects().size());
             }
             System.out.println("RefreshHandler: Finished PostExecute");
         }

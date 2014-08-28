@@ -15,6 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import dk.d3m.dbs.model.PictureRegister;
+import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.SaleRegister;
 
 /**
@@ -33,13 +34,13 @@ public class Connector {
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
 
-    public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister) {
+    public Connector(Activity context, boolean auto) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.address = prefs.getString("host", "192.168.0.31");
-        this.port = Integer.valueOf(prefs.getString("port", "6666"));
+        this.address = prefs.getString("host", "");
+        this.port = Integer.valueOf(prefs.getString("port", ""));
         this.auto = auto;
-        this.pictureRegister = pictureRegister;
-        this.saleRegister = saleRegister;
+        this.pictureRegister = RegisterHandler.getPictureRegisterInstance();
+        this.saleRegister = RegisterHandler.getSaleRegisterInstance();
         this.context = context;
 
     }

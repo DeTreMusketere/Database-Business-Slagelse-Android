@@ -68,5 +68,13 @@ public abstract class Register<DATATYPE extends Data> {
         return objects;
     }
 
+    /**
+     * Sets all objects
+     * @param objects
+     */
+    public void setObjects(ArrayList<DATATYPE> objects) {
+        this.objects = objects;
+    }
+
 
 }

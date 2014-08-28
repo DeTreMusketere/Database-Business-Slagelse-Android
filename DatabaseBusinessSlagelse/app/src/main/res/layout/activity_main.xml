@@ -2,36 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="dk.d3m.dbs.MainActivity">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:indeterminateOnly="true"
-        android:max="100"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="-6dp"
-        android:visibility="invisible"
-        android:id="@+id/progressBar" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Get update number"
-        android:id="@+id/getUNbtn"
-        android:onClick="getUNbtn"/>
 
-    <ListView
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/saleListView"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saleListView"
+            android:layout_gravity="center_horizontal" />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>
