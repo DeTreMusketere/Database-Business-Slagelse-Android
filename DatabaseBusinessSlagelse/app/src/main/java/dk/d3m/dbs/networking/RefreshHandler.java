@@ -5,12 +5,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import dk.d3m.dbs.R;
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
 
@@ -27,9 +24,9 @@ public class RefreshHandler {
     private SwipeRefreshLayout swipeLayout;
     protected SharedPreferences prefs;
 
-    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter) {
-        this.pictureRegister = RegisterHandler.getPictureRegisterInstance();
-        this.saleRegister = RegisterHandler.getSaleRegisterInstance();
+    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter, PictureRegister pictureRegister, SaleRegister saleRegister) {
+        this.pictureRegister = pictureRegister;
+        this.saleRegister = saleRegister;
         this.saleAdapter = saleAdapter;
         this.context = context;
         swipeLayout = (SwipeRefreshLayout) context.findViewById(R.id.swipe_container);
@@ -46,13 +43,14 @@ public class RefreshHandler {
 
         @Override
         protected void onPreExecute() {
+            super.onPreExecute();
             System.out.println("RefreshHandler: Running PreExecute");
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             System.out.println("RefreshHandler: Running DoInBackground");
-            Connector connector = new Connector(context, false);
+            Connector connector = new Connector(context, false, pictureRegister, saleRegister);
 
             boolean connected = connector.connect();
             if(connected) {
@@ -88,6 +86,7 @@ public class RefreshHandler {
 
         @Override
         protected void onPostExecute(Boolean b) {
+            super.onPostExecute(b);
             System.out.println("RefreshHandler: Running PostExecute");
             swipeLayout.setRefreshing(false);
             if(!b) {
@@ -96,13 +95,19 @@ public class RefreshHandler {
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putInt("localun", localUN);
                 editor.commit();
-                saleAdapter.notifyDataSetChanged();
-                System.out.println("Sales: " + saleRegister.getObjects().size());
-                System.out.println("Pictures: " + pictureRegister.getObjects().size());
+
+                System.out.println("SaleRegister objects size: " + saleRegister.getObjects().size());
+                RefreshHandler.this.saleAdapter.notifyDataSetChanged();
             }
             System.out.println("RefreshHandler: Finished PostExecute");
         }
 
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            swipeLayout.setRefreshing(false);
+            Toast.makeText(context, "Refresh was cancelled", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

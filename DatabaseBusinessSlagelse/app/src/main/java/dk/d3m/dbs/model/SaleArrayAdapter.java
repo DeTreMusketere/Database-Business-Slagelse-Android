@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.List;
-
 import dk.d3m.dbs.R;
 
 /**
@@ -14,8 +11,8 @@ import dk.d3m.dbs.R;
  */
 public class SaleArrayAdapter extends JellyArrayAdapter<Sale> {
 
-    public SaleArrayAdapter(Context context, List<Sale> objects) {
-        super(context, R.layout.sale_list, objects);
+    public SaleArrayAdapter(Context context, Register<Sale> register) {
+        super(context, R.layout.sale_list, register.getObjects());
     }
 
     @Override

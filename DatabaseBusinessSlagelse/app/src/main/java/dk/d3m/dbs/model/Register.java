@@ -1,7 +1,6 @@
 package dk.d3m.dbs.model;
 
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**

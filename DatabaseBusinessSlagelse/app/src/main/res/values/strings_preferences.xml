@@ -16,5 +16,5 @@
     <string name="pref_host_title">Host</string>
     <string name="pref_host_key">host</string>
     <string name="pref_host_summary">The host address to use when connecting to the NetServer</string>
-    <string name="pref_host_defaultValue">192.168.0.31</string>
+    <string name="pref_host_defaultValue">194.255.32.68</string>
 </resources>

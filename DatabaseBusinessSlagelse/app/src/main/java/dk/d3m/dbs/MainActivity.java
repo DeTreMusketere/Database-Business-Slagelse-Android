@@ -1,21 +1,23 @@
 package dk.d3m.dbs;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-
-import java.util.logging.FileHandler;
-
+import android.widget.SearchView;
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
@@ -32,23 +34,38 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     private SwipeRefreshLayout swipeLayout;
     private SharedPreferences prefs;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FileTool.loadRegisters(this);
+        createRegisters();
+        FileTool.loadRegisters(this, pictureRegister, saleRegister);
+        initSharedPreferences();
+        initSwipeToRefresh();
+        initSaleListView();
+        initRefreshHandler();
+        initDrawer();
+    }
 
+    private void createRegisters() {
+        pictureRegister = new PictureRegister();
+        saleRegister = new SaleRegister(pictureRegister);
+    }
+
+    private void initSharedPreferences() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         if(!prefs.contains("host")) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("host", "192.168.0.31");
+            editor.putString("host", getString(R.string.pref_host_defaultValue));
             editor.commit();
         }
         if(!prefs.contains("port")) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("port", "6666");
+            editor.putString("port", getString(R.string.pref_port_defaultValue));
             editor.commit();
         }
         if(!prefs.contains("refreshOnStart")) {
@@ -56,21 +73,46 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
             editor.putBoolean("refreshOnStart", true);
             editor.commit();
         }
+    }
 
+    private void initSwipeToRefresh() {
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+    }
 
-        pictureRegister = RegisterHandler.getPictureRegisterInstance();
-        saleRegister = RegisterHandler.getSaleRegisterInstance();
-        saleAdapter = new SaleArrayAdapter(this, saleRegister.getObjects());
+    private void initSaleListView() {
+        saleAdapter = new SaleArrayAdapter(this, saleRegister);
         saleListView = (ListView)findViewById(R.id.saleListView);
         saleListView.setAdapter(saleAdapter);
-        refreshHandler = new RefreshHandler(this, saleAdapter);
+    }
 
+    private void initRefreshHandler() {
+        refreshHandler = new RefreshHandler(this, saleAdapter, pictureRegister, saleRegister);
+    }
+
+    private void initDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        );
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FileTool.loadRegisters(this, pictureRegister, saleRegister);
         if(prefs.getBoolean("refreshOnStart", true)) {
             swipeLayout.setRefreshing(true);
             refreshHandler.refreshContent();
@@ -78,17 +120,56 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FileTool.saveRegisters(this, pictureRegister, saleRegister);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FileTool.saveRegisters(this, pictureRegister, saleRegister);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
+        Intent intent;
         switch(id) {
             case R.id.action_settings:
-                Intent intent = new Intent("dk.d3m.dbs.SETTINGS");
+                intent = new Intent("dk.d3m.dbs.SETTINGS");
+                startActivity(intent);
+                break;
+            case R.id.action_help:
+                intent = new Intent("dk.d3m.dbs.HELP");
                 startActivity(intent);
                 break;
         }
@@ -104,13 +185,11 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     protected void onPause() {
         super.onPause();
         System.out.println("I AM PAUSED");
-        FileTool.saveRegisters(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         System.out.println("I AM RESMUED");
-        FileTool.loadRegisters(this);
     }
 }

@@ -1,8 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="dk.d3m.dbs.MainActivity" >
+    <item android:id="@+id/action_search"
+        android:icon="@drawable/ic_action_search"
+        android:title="@string/action_search"
+        android:showAsAction="always"
+        android:actionViewClass="android.widget.SearchView"/>
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
+        android:orderInCategory="90"
+        android:showAsAction="never" />
+    <item android:id="@+id/action_help"
+        android:title = "@string/action_help"
         android:orderInCategory="100"
         android:showAsAction="never" />
+
 </menu>

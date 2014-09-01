@@ -1,21 +1,15 @@
 package dk.d3m.dbs.networking;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.SaleRegister;
 
 /**
@@ -34,13 +28,13 @@ public class Connector {
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
 
-    public Connector(Activity context, boolean auto) {
+    public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         this.address = prefs.getString("host", "");
         this.port = Integer.valueOf(prefs.getString("port", ""));
         this.auto = auto;
-        this.pictureRegister = RegisterHandler.getPictureRegisterInstance();
-        this.saleRegister = RegisterHandler.getSaleRegisterInstance();
+        this.pictureRegister = pictureRegister;
+        this.saleRegister = saleRegister;
         this.context = context;
 
     }

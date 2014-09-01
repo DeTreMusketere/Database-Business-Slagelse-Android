@@ -24,6 +24,12 @@ public abstract class JellyArrayAdapter<DATATYPE extends Data> extends ArrayAdap
         this.viewActivity = viewActivity;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        System.out.println("Array objects size: " + objects.size());
+    }
+
     /**
      * Constructs a rowView
      * @param rowView

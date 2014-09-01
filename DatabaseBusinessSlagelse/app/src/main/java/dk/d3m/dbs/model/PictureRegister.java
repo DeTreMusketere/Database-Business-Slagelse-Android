@@ -1,7 +1,6 @@
 package dk.d3m.dbs.model;
 
 import android.util.Base64;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

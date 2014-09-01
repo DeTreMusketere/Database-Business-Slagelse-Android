@@ -2,18 +2,14 @@ package dk.d3m.dbs.tools;
 
 import android.content.Context;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
-
 import dk.d3m.dbs.model.Picture;
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.RegisterHandler;
 import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
 
@@ -25,9 +21,7 @@ public class FileTool {
     private static final String picturePath = "pictureObjects.data";
     private static final String salePath = "saleObjects.data";
 
-    public static void saveRegisters(Context context) {
-        PictureRegister pictureRegister = RegisterHandler.getPictureRegisterInstance();
-        SaleRegister saleRegister = RegisterHandler.getSaleRegisterInstance();
+    public static void saveRegisters(Context context, PictureRegister pictureRegister, SaleRegister saleRegister) {
         try {
             FileOutputStream fout = context.openFileOutput(picturePath, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -51,10 +45,7 @@ public class FileTool {
         }
     }
 
-    public static void loadRegisters(Context context) {
-        PictureRegister pictureRegister = RegisterHandler.getPictureRegisterInstance();
-        SaleRegister saleRegister = RegisterHandler.getSaleRegisterInstance();
-
+    public static void loadRegisters(Context context, PictureRegister pictureRegister, SaleRegister saleRegister) {
 
         try {
             FileInputStream fin = context.openFileInput(picturePath);
