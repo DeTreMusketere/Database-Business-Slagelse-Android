@@ -15,11 +15,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import dk.d3m.dbs.model.DrawerItemClickListener;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
@@ -106,7 +105,19 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
-        );
+        ) {
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -190,6 +201,15 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         return super.onOptionsItemSelected(item);
     }
 
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(tagListView);
+        menu.findItem(R.id.action_search).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @Override
     public void onRefresh() {
         refreshHandler.refreshContent();
@@ -205,5 +225,18 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     protected void onResume() {
         super.onResume();
         System.out.println("I AM RESMUED");
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position) {
+        tagListView.setItemChecked(position, true);
+        mDrawerLayout.closeDrawer(tagListView);
     }
 }

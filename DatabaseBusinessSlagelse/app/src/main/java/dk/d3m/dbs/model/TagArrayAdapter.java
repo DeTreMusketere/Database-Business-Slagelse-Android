@@ -1,6 +1,7 @@
 package dk.d3m.dbs.model;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
