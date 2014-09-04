@@ -10,6 +10,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
         android:id="@+id/tagTitleTV"
-        android:textColor="#fff"
+        android:textColor="#000"
         android:layout_margin="10dp"/>
 </LinearLayout>

@@ -10,16 +10,9 @@
     <string name="action_search">Search</string>
     <string name="action_help">Help</string>
     <string name="hint_search">Search for sales</string>
-
     <color name="baseColor">#381042</color>
-
     <string name="hello_world">Hello world!</string>
-    <string name="drawer_open"></string>
-    <string name="drawer_close"></string>
-    
-    <array name="testArray">
-        <item>Test1</item>
-        <item>Test2</item>
-    </array>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

@@ -103,8 +103,8 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
                 R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
+                R.string.navigation_drawer_open,  /* "open drawer" description */
+                R.string.navigation_drawer_close  /* "close drawer" description */
         ) {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
@@ -123,7 +123,6 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 
-        String[] mPlanetTitles = getResources().getStringArray(R.array.testArray);
         tagAdapter = new TagArrayAdapter(this, tagRegister);
         tagListView = (ListView)findViewById(R.id.left_drawer);
         tagListView.setAdapter(tagAdapter);
@@ -237,6 +236,5 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private void selectItem(int position) {
         tagListView.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(tagListView);
     }
 }
