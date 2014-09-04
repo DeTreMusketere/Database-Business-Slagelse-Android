@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.SaleRegister;
+import dk.d3m.dbs.model.TagRegister;
 
 /**
  * Created by Patrick on 23-08-2014.
@@ -27,14 +28,16 @@ public class Connector {
 
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
+    private TagRegister tagRegister;
 
-    public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister) {
+    public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         this.address = prefs.getString("host", "");
         this.port = Integer.valueOf(prefs.getString("port", ""));
         this.auto = auto;
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
+        this.tagRegister = tagRegister;
         this.context = context;
 
     }
@@ -104,10 +107,12 @@ public class Connector {
                 JSONArray array;
                 JSONArray JSONPictures = null;
                 JSONArray JSONSales = null;
+                JSONArray JSONTags = null;
                 try {
                     array = new JSONArray(jsonArrayString);
-                    JSONPictures = array.getJSONArray(1);
                     JSONSales = array.getJSONArray(0);
+                    JSONPictures = array.getJSONArray(1);
+                    JSONTags = array.getJSONArray(2);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return false;
@@ -129,6 +134,17 @@ public class Connector {
                     try {
                         JSONObject obj = JSONSales.getJSONObject(i);
                         saleRegister.create(obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+
+                for(int i = 0; i < JSONTags.length(); i++) {
+                    System.out.println("Creating tag");
+                    try {
+                        JSONObject obj = JSONTags.getJSONObject(i);
+                        tagRegister.create(obj);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return false;

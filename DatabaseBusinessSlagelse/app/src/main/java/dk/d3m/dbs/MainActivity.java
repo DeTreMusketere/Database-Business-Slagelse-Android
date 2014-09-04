@@ -15,11 +15,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+
+import dk.d3m.dbs.model.DrawerItemClickListener;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
+import dk.d3m.dbs.model.TagArrayAdapter;
+import dk.d3m.dbs.model.TagRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
 import dk.d3m.dbs.tools.FileTool;
 
@@ -28,12 +33,14 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
+    private TagRegister tagRegister;
     private RefreshHandler refreshHandler;
     private SaleArrayAdapter saleAdapter;
+    private TagArrayAdapter tagAdapter;
     private ListView saleListView;
+    private ListView tagListView;
     private SwipeRefreshLayout swipeLayout;
     private SharedPreferences prefs;
-
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -43,17 +50,18 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.activity_main);
 
         createRegisters();
-        FileTool.loadRegisters(this, pictureRegister, saleRegister);
+        FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
         initSharedPreferences();
         initSwipeToRefresh();
         initSaleListView();
-        initRefreshHandler();
         initDrawer();
+        initRefreshHandler();
     }
 
     private void createRegisters() {
         pictureRegister = new PictureRegister();
         saleRegister = new SaleRegister(pictureRegister);
+        tagRegister = new TagRegister();
     }
 
     private void initSharedPreferences() {
@@ -90,10 +98,6 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         saleListView.setAdapter(saleAdapter);
     }
 
-    private void initRefreshHandler() {
-        refreshHandler = new RefreshHandler(this, saleAdapter, pictureRegister, saleRegister);
-    }
-
     private void initDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -107,12 +111,22 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+
+        String[] mPlanetTitles = getResources().getStringArray(R.array.testArray);
+        tagAdapter = new TagArrayAdapter(this, tagRegister);
+        tagListView = (ListView)findViewById(R.id.left_drawer);
+        tagListView.setAdapter(tagAdapter);
+        tagListView.setOnItemClickListener(new DrawerItemClickListener());
+    }
+
+    private void initRefreshHandler() {
+        refreshHandler = new RefreshHandler(this, saleAdapter, tagAdapter, pictureRegister, saleRegister, tagRegister);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FileTool.loadRegisters(this, pictureRegister, saleRegister);
+        FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
         if(prefs.getBoolean("refreshOnStart", true)) {
             swipeLayout.setRefreshing(true);
             refreshHandler.refreshContent();
@@ -122,13 +136,13 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FileTool.saveRegisters(this, pictureRegister, saleRegister);
+        FileTool.saveRegisters(this, pictureRegister, saleRegister, tagRegister);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FileTool.saveRegisters(this, pictureRegister, saleRegister);
+        FileTool.saveRegisters(this, pictureRegister, saleRegister, tagRegister);
     }
 
     @Override
