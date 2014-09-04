@@ -16,9 +16,17 @@ public abstract class JellyArrayAdapter<DATATYPE extends Data> extends ArrayAdap
     protected Context context;
     protected List<DATATYPE> objects;
     protected int viewActivity;
+    protected int viewActivitySelected;
 
     public JellyArrayAdapter(Context context, int viewActivity, List<DATATYPE> objects) {
         super(context, viewActivity, objects);
+        this.objects = objects;
+        this.context = context;
+        this.viewActivity = viewActivity;
+    }
+
+    public JellyArrayAdapter(Context context, int viewActivitySelected, int viewActivity, List<DATATYPE> objects) {
+        super(context, viewActivitySelected, viewActivity, objects);
         this.objects = objects;
         this.context = context;
         this.viewActivity = viewActivity;

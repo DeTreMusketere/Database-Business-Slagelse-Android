@@ -10,7 +10,6 @@ import dk.d3m.dbs.R;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.SaleArrayAdapter;
 import dk.d3m.dbs.model.SaleRegister;
-import dk.d3m.dbs.model.TagArrayAdapter;
 import dk.d3m.dbs.model.TagRegister;
 
 /**
@@ -24,16 +23,14 @@ public class RefreshHandler {
     private Activity context;
     private int localUN = 0;
     private SaleArrayAdapter saleAdapter;
-    private TagArrayAdapter tagAdapter;
     private SwipeRefreshLayout swipeLayout;
     protected SharedPreferences prefs;
 
-    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter, TagArrayAdapter tagAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
+    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
         this.tagRegister = tagRegister;
         this.saleAdapter = saleAdapter;
-        this.tagAdapter = tagAdapter;
         this.context = context;
         swipeLayout = (SwipeRefreshLayout) context.findViewById(R.id.swipe_container);
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -103,7 +100,6 @@ public class RefreshHandler {
                 editor.commit();
 
                 RefreshHandler.this.saleAdapter.notifyDataSetChanged();
-                RefreshHandler.this.tagAdapter.notifyDataSetChanged();
 
                 System.out.println("Tags: " + tagRegister.getObjects().size());
             }
