@@ -21,8 +21,13 @@ public class TagRegister extends Register<Tag> {
         }
     }
 
-    public void create(int id, String name, String description) {
-        Tag t = new Tag(id, name, description);
-        insert(t);
+    public String[] getObjectsAsStringArray() {
+        String[] array = new String[objects.size()];
+
+        for(int i=0; i < objects.size(); i++) {
+            array[i] = objects.get(i).getName();
+        }
+
+        return array;
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import dk.d3m.dbs.R;
 import dk.d3m.dbs.model.JellyArrayAdapter;
@@ -21,6 +22,7 @@ public class RefreshHandler {
     private SaleRegister saleRegister;
     private TagRegister tagRegister;
     private JellyArrayAdapter<Sale> saleAdapter;
+    private ArrayAdapter<String> mDrawerAdapter;
 
     private SwipeRefreshLayout swipeLayout;
 
@@ -31,11 +33,12 @@ public class RefreshHandler {
     private int localUN = 0;
     private int serverUN = 0;
 
-    public RefreshHandler(Activity context, JellyArrayAdapter<Sale> saleAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister, SharedPreferences prefs) {
+    public RefreshHandler(Activity context, JellyArrayAdapter<Sale> saleAdapter, ArrayAdapter mDrawerAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister, SharedPreferences prefs) {
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
         this.tagRegister = tagRegister;
         this.saleAdapter = saleAdapter;
+        this.mDrawerAdapter = mDrawerAdapter;
         this.context = context;
         this.prefs = prefs;
         swipeLayout = (SwipeRefreshLayout) context.findViewById(R.id.swipe_container);
@@ -108,6 +111,7 @@ public class RefreshHandler {
                 editor.commit();
 
                 RefreshHandler.this.saleAdapter.notifyDataSetChanged();
+                RefreshHandler.this.mDrawerAdapter.notifyDataSetChanged();
             }
             System.out.println("RefreshHandler: Finished PostExecute");
         }

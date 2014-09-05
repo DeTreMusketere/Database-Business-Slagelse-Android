@@ -23,7 +23,6 @@ public class FileTool {
     private static final String picturePath = "pictureObjects.data";
     private static final String salePath = "saleObjects.data";
     private static final String tagPath = "tagObjects.data";
-    private static final String unPath = "unObjects.data";
 
     public static void saveRegisters(Context context, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
         try {

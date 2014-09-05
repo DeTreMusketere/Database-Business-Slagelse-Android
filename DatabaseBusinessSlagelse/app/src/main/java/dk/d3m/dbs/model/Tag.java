@@ -32,6 +32,6 @@ public class Tag extends Data {
 
     @Override
     public String toString() {
-        return "name: " + name + " description: " + description;
+        return name;
     }
 }

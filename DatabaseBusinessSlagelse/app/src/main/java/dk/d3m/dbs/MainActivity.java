@@ -5,12 +5,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -20,6 +25,7 @@ import dk.d3m.dbs.model.JellyArrayAdapter;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
+import dk.d3m.dbs.model.Tag;
 import dk.d3m.dbs.model.TagRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
 import dk.d3m.dbs.tools.FileTool;
@@ -36,6 +42,11 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     private SwipeRefreshLayout swipeLayout;
     private SharedPreferences prefs;
 
+    private ArrayAdapter<Tag> mDrawerAdapter;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +58,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
         initSwipeToRefresh();
         initSaleListView();
+        initDrawer();
         initRefreshHandler();
     }
 
@@ -106,8 +118,70 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         saleListView.setAdapter(saleAdapter);
     }
 
+    private void initDrawer() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // Set the adapter for the list view
+        mDrawerAdapter = new ArrayAdapter<Tag>(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                tagRegister.getObjects());
+        mDrawerList.setAdapter(mDrawerAdapter);
+
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+    }
+
     private void initRefreshHandler() {
-        refreshHandler = new RefreshHandler(this, saleAdapter, pictureRegister, saleRegister, tagRegister, prefs);
+        refreshHandler = new RefreshHandler(this, saleAdapter, mDrawerAdapter, pictureRegister, saleRegister, tagRegister, prefs);
+    }
+
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        System.out.println("### - onPrepareOptionsMenu - ###");
+
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.action_search).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        System.out.println("### - onPostCreate - ###");
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        System.out.println("### - onConfigurationChanged - ###");
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -138,6 +212,11 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         System.out.println("### - onOptionsItemSelected - ###");
+
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
         Intent intent;
         switch(id) {
@@ -157,5 +236,13 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     public void onRefresh() {
         System.out.println("### - onRefresh - ###");
         refreshHandler.refreshContent();
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            mDrawerList.setItemChecked(position, true);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
     }
 }

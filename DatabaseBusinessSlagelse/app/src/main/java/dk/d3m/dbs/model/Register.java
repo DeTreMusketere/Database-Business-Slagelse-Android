@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public abstract class Register<DATATYPE extends Data> {
 
-    private ArrayList<DATATYPE> objects;
+    protected ArrayList<DATATYPE> objects;
 
     public Register() {
         objects = new ArrayList<DATATYPE>();
