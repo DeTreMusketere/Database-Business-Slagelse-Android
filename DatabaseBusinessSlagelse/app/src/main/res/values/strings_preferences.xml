@@ -7,14 +7,4 @@
     <string name="pref_refreshOnStart_key">refreshOnStart</string>
     <string name="pref_refreshOnStart_summary">Should this app refresh content on start?</string>
     <string name="pref_refreshOnStart_defaultValue">true</string>
-
-    <string name="pref_port_title">Port</string>
-    <string name="pref_port_key">port</string>
-    <string name="pref_port_summary">The port to use when connecting to the NetServer</string>
-    <string name="pref_port_defaultValue">6666</string>
-
-    <string name="pref_host_title">Host</string>
-    <string name="pref_host_key">host</string>
-    <string name="pref_host_summary">The host address to use when connecting to the NetServer</string>
-    <string name="pref_host_defaultValue">194.255.32.68</string>
 </resources>

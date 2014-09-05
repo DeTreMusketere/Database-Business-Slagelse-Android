@@ -3,12 +3,12 @@ package dk.d3m.dbs.networking;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.Toast;
 import dk.d3m.dbs.R;
+import dk.d3m.dbs.model.JellyArrayAdapter;
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.SaleArrayAdapter;
+import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
 import dk.d3m.dbs.model.TagRegister;
 
@@ -20,21 +20,27 @@ public class RefreshHandler {
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
     private TagRegister tagRegister;
-    private Activity context;
-    private int localUN = 0;
-    private SaleArrayAdapter saleAdapter;
-    private SwipeRefreshLayout swipeLayout;
-    protected SharedPreferences prefs;
+    private JellyArrayAdapter<Sale> saleAdapter;
 
-    public RefreshHandler(Activity context,SaleArrayAdapter saleAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
+    private SwipeRefreshLayout swipeLayout;
+
+    private Activity context;
+
+    private SharedPreferences prefs;
+
+    private int localUN = 0;
+    private int serverUN = 0;
+
+    public RefreshHandler(Activity context, JellyArrayAdapter<Sale> saleAdapter, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister, SharedPreferences prefs) {
         this.pictureRegister = pictureRegister;
         this.saleRegister = saleRegister;
         this.tagRegister = tagRegister;
         this.saleAdapter = saleAdapter;
         this.context = context;
+        this.prefs = prefs;
         swipeLayout = (SwipeRefreshLayout) context.findViewById(R.id.swipe_container);
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        this.localUN = prefs.getInt("localun", 0);
+
+        localUN = prefs.getInt("localun", 0);
     }
 
     public void refreshContent() {
@@ -57,7 +63,7 @@ public class RefreshHandler {
 
             boolean connected = connector.connect();
             if(connected) {
-                int serverUN = connector.getCurrrentUpdateNumber();
+                serverUN = connector.getCurrrentUpdateNumber();
                 System.out.println("ServerUN: " + serverUN);
                 System.out.println("LocalUN: " + localUN);
                 connector.disconnect();
@@ -70,9 +76,6 @@ public class RefreshHandler {
                         connector.disconnect();
                         if (!updated) {
                             return false;
-                        } else {
-                            System.out.println("OPDATERE");
-                            localUN = serverUN;
                         }
                     } else {
                         return false;
@@ -94,14 +97,17 @@ public class RefreshHandler {
             swipeLayout.setRefreshing(false);
             if(!b) {
                 Toast.makeText(context, "Could not refresh content", Toast.LENGTH_SHORT).show();
+                serverUN = 0;
             } else {
+                localUN = serverUN;
+                serverUN = 0;
+
                 SharedPreferences.Editor editor = prefs.edit();
+
                 editor.putInt("localun", localUN);
                 editor.commit();
 
                 RefreshHandler.this.saleAdapter.notifyDataSetChanged();
-
-                System.out.println("Tags: " + tagRegister.getObjects().size());
             }
             System.out.println("RefreshHandler: Finished PostExecute");
         }

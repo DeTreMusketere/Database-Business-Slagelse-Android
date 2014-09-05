@@ -5,23 +5,20 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.preference.Preference;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
+import dk.d3m.dbs.model.JellyArrayAdapter;
 import dk.d3m.dbs.model.PictureRegister;
-import dk.d3m.dbs.model.SaleArrayAdapter;
+import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
 import dk.d3m.dbs.model.TagRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
@@ -34,7 +31,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     private SaleRegister saleRegister;
     private TagRegister tagRegister;
     private RefreshHandler refreshHandler;
-    private SaleArrayAdapter saleAdapter;
+    private JellyArrayAdapter<Sale> saleAdapter;
     private ListView saleListView;
     private SwipeRefreshLayout swipeLayout;
     private SharedPreferences prefs;
@@ -43,38 +40,46 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        System.out.println("### - onCreate - ###");
 
+        initSharedPreferences();
         createRegisters();
         FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
-        initSharedPreferences();
         initSwipeToRefresh();
         initSaleListView();
         initRefreshHandler();
+    }
+
+    private void initSharedPreferences() {
+        // Get a new preference
+        prefs = getPreferences(0);
+
+        // Get editor
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // Put default localUN
+        if(!prefs.contains("localun")) {
+            editor.putInt("localun", 0);
+        }
+
+        // Put default host
+        if(!prefs.contains("host")) {
+            editor.putString("host", "192.168.0.31");
+        }
+
+        // Put default port
+        if(!prefs.contains("port")) {
+            editor.putInt("port", 6666);
+        }
+
+        // Commit
+        editor.commit();
     }
 
     private void createRegisters() {
         pictureRegister = new PictureRegister();
         saleRegister = new SaleRegister(pictureRegister);
         tagRegister = new TagRegister();
-    }
-
-    private void initSharedPreferences() {
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if(!prefs.contains("host")) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("host", getString(R.string.pref_host_defaultValue));
-            editor.commit();
-        }
-        if(!prefs.contains("port")) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("port", getString(R.string.pref_port_defaultValue));
-            editor.commit();
-        }
-        if(!prefs.contains("refreshOnStart")) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("refreshOnStart", true);
-            editor.commit();
-        }
     }
 
     private void initSwipeToRefresh() {
@@ -87,39 +92,40 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initSaleListView() {
-        saleAdapter = new SaleArrayAdapter(this, saleRegister);
+        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getObjects()) {
+            @Override
+            public void constructRowView(View rowView, Sale object) {
+                TextView name = (TextView)rowView.findViewById(R.id.name);
+                ImageView image = (ImageView)rowView.findViewById(R.id.image);
+
+                name.setText(object.getName());
+                image.setImageBitmap(object.getPicture().getBitmap());
+            }
+        };
         saleListView = (ListView)findViewById(R.id.saleListView);
         saleListView.setAdapter(saleAdapter);
     }
 
     private void initRefreshHandler() {
-        refreshHandler = new RefreshHandler(this, saleAdapter, pictureRegister, saleRegister, tagRegister);
+        refreshHandler = new RefreshHandler(this, saleAdapter, pictureRegister, saleRegister, tagRegister, prefs);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
-        if(prefs.getBoolean("refreshOnStart", true)) {
-            swipeLayout.setRefreshing(true);
-            refreshHandler.refreshContent();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        FileTool.saveRegisters(this, pictureRegister, saleRegister, tagRegister);
+        System.out.println("### - onStart - ###");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        System.out.println("### - onStop - ###");
         FileTool.saveRegisters(this, pictureRegister, saleRegister, tagRegister);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        System.out.println("### - onCreateOptionsMenu - ###");
         getMenuInflater().inflate(R.menu.main, menu);
 
         // Associate searchable configuration with the SearchView
@@ -131,6 +137,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        System.out.println("### - onOptionsItemSelected - ###");
         int id = item.getItemId();
         Intent intent;
         switch(id) {
@@ -148,18 +155,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
+        System.out.println("### - onRefresh - ###");
         refreshHandler.refreshContent();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        System.out.println("I AM PAUSED");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("I AM RESMUED");
     }
 }
