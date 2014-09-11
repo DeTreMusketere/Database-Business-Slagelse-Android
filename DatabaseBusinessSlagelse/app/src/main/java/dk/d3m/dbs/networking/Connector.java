@@ -30,7 +30,7 @@ public class Connector {
     private TagRegister tagRegister;
 
     public Connector(Activity context, boolean auto, PictureRegister pictureRegister, SaleRegister saleRegister, TagRegister tagRegister) {
-        this.address = "192.168.0.31";
+        this.address = "10.64.9.166";
         this.port = 6666;
         this.auto = auto;
         this.pictureRegister = pictureRegister;
@@ -127,22 +127,22 @@ public class Connector {
                     }
                 }
 
-                for(int i = 0; i < JSONSales.length(); i++) {
-                    System.out.println("Creating sale");
+                for(int i = 0; i < JSONTags.length(); i++) {
+                    System.out.println("Creating tag");
                     try {
-                        JSONObject obj = JSONSales.getJSONObject(i);
-                        saleRegister.create(obj);
+                        JSONObject obj = JSONTags.getJSONObject(i);
+                        tagRegister.create(obj);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return false;
                     }
                 }
 
-                for(int i = 0; i < JSONTags.length(); i++) {
-                    System.out.println("Creating tag");
+                for(int i = 0; i < JSONSales.length(); i++) {
+                    System.out.println("Creating sale");
                     try {
-                        JSONObject obj = JSONTags.getJSONObject(i);
-                        tagRegister.create(obj);
+                        JSONObject obj = JSONSales.getJSONObject(i);
+                        saleRegister.create(obj);
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return false;

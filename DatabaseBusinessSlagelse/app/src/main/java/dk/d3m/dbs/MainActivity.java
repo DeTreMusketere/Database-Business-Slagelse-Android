@@ -90,8 +90,9 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private void createRegisters() {
         pictureRegister = new PictureRegister();
-        saleRegister = new SaleRegister(pictureRegister);
         tagRegister = new TagRegister();
+        saleRegister = new SaleRegister(pictureRegister, tagRegister);
+
     }
 
     private void initSwipeToRefresh() {

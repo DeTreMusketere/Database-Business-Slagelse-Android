@@ -1,8 +1,10 @@
 package dk.d3m.dbs.model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -11,9 +13,11 @@ import java.util.Date;
 public class SaleRegister extends Register<Sale> {
 
     private PictureRegister pictureRegister;
+    private TagRegister tagRegister;
 
-    public SaleRegister(PictureRegister pictureRegister) {
+    public SaleRegister(PictureRegister pictureRegister, TagRegister tagRegister) {
         this.pictureRegister = pictureRegister;
+        this.tagRegister = tagRegister;
     }
 
     @Override
@@ -27,8 +31,14 @@ public class SaleRegister extends Register<Sale> {
             double price = obj.getDouble("price");
             Date start = new Date(obj.getLong("start"));
             Date end = new Date(obj.getLong("end"));
+            ArrayList<Tag> tags = new ArrayList<Tag>();
+            JSONArray tArray = obj.getJSONArray("tags");
+            for(int i = 0; i < tArray.length(); i++) {
+                Tag t = tagRegister.get(tArray.getInt(i));
+                tags.add(t);
+            }
 
-            Sale s = new Sale(id, name, description, picture, price, start, end);
+            Sale s = new Sale(id, name, description, picture, price, start, end, tags);
             insert(s);
         } catch (JSONException e) {
             e.printStackTrace();

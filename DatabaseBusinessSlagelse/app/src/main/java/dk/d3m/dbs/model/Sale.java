@@ -1,5 +1,6 @@
 package dk.d3m.dbs.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -13,8 +14,9 @@ public class Sale extends Data {
     private double price;
     private Date start;
     private Date end;
+    private ArrayList<Tag> tags;
 
-    public Sale(int id, String name, String description, Picture picture, double price, Date start, Date end) {
+    public Sale(int id, String name, String description, Picture picture, double price, Date start, Date end, ArrayList<Tag> tags) {
         super(id);
         this.name = name;
         this.description = description;
@@ -22,6 +24,7 @@ public class Sale extends Data {
         this.price = price;
         this.start = start;
         this.end = end;
+        this.tags = tags;
     }
 
     public String getName() {
@@ -70,6 +73,14 @@ public class Sale extends Data {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public ArrayList<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
