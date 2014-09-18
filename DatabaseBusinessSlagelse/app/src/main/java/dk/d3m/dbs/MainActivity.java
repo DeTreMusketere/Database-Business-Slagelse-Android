@@ -25,6 +25,7 @@ import dk.d3m.dbs.model.JellyArrayAdapter;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
+import dk.d3m.dbs.model.SaleSorter;
 import dk.d3m.dbs.model.Tag;
 import dk.d3m.dbs.model.TagRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
+    private SaleSorter saleSorter;
     private TagRegister tagRegister;
     private RefreshHandler refreshHandler;
     private JellyArrayAdapter<Sale> saleAdapter;
@@ -76,7 +78,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
         // Put default host
         if(!prefs.contains("host")) {
-            editor.putString("host", "192.168.0.31");
+            editor.putString("host", "194.255.32.68");
         }
 
         // Put default port
@@ -92,7 +94,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         pictureRegister = new PictureRegister();
         tagRegister = new TagRegister();
         saleRegister = new SaleRegister(pictureRegister, tagRegister);
-
+        saleSorter = new SaleSorter(saleRegister);
     }
 
     private void initSwipeToRefresh() {
@@ -105,7 +107,8 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initSaleListView() {
-        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getObjects()) {
+        saleSorter.sortObjects(null);
+        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleSorter.getSortedObjects()) {
             @Override
             public void constructRowView(View rowView, Sale object) {
                 TextView name = (TextView)rowView.findViewById(R.id.name);
@@ -221,10 +224,6 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         int id = item.getItemId();
         Intent intent;
         switch(id) {
-            case R.id.action_settings:
-                intent = new Intent("dk.d3m.dbs.SETTINGS");
-                startActivity(intent);
-                break;
             case R.id.action_help:
                 intent = new Intent("dk.d3m.dbs.HELP");
                 startActivity(intent);

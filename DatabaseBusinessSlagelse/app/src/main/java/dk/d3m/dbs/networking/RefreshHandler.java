@@ -62,7 +62,7 @@ public class RefreshHandler {
         @Override
         protected Boolean doInBackground(String... params) {
             System.out.println("RefreshHandler: Running DoInBackground");
-            Connector connector = new Connector(context, false, pictureRegister, saleRegister, tagRegister);
+            Connector connector = new Connector(context, prefs, false, pictureRegister, saleRegister, tagRegister);
 
             boolean connected = connector.connect();
             if(connected) {
