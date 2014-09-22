@@ -22,6 +22,7 @@ public class SaleSorter {
     }
 
     public void sortObjects(Tag tag) {
-        sortedObjects = SaleSortUtil.sortByTag(saleRegister.getObjects(), tag);
+        sortedObjects.clear();
+        sortedObjects.addAll(SaleSortUtil.sortByTag(saleRegister.getObjects(), tag));
     }
 }

@@ -78,7 +78,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
         // Put default host
         if(!prefs.contains("host")) {
-            editor.putString("host", "194.255.32.68");
+            editor.putString("host", "194.255.32.70");
         }
 
         // Put default port
