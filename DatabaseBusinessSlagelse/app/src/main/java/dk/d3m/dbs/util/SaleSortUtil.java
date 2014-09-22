@@ -20,6 +20,7 @@ public class SaleSortUtil {
         if(tag != null) {
             ArrayList<Sale> newSales = new ArrayList<Sale>();
             for (Sale s : sales) {
+                System.out.println(s.getTags().size());
                 if (s.getTags().contains(tag)) {
                     newSales.add(s);
                 }

@@ -21,11 +21,11 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import dk.d3m.dbs.exceptions.TagIsNullException;
 import dk.d3m.dbs.model.JellyArrayAdapter;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.Sale;
 import dk.d3m.dbs.model.SaleRegister;
-import dk.d3m.dbs.model.SaleSorter;
 import dk.d3m.dbs.model.Tag;
 import dk.d3m.dbs.model.TagRegister;
 import dk.d3m.dbs.networking.RefreshHandler;
@@ -36,7 +36,6 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private PictureRegister pictureRegister;
     private SaleRegister saleRegister;
-    private SaleSorter saleSorter;
     private TagRegister tagRegister;
     private RefreshHandler refreshHandler;
     private JellyArrayAdapter<Sale> saleAdapter;
@@ -94,7 +93,6 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         pictureRegister = new PictureRegister();
         tagRegister = new TagRegister();
         saleRegister = new SaleRegister(pictureRegister, tagRegister);
-        saleSorter = new SaleSorter(saleRegister);
     }
 
     private void initSwipeToRefresh() {
@@ -107,8 +105,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initSaleListView() {
-        saleSorter.sortObjects(null);
-        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleSorter.getSortedObjects()) {
+        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getObjects()) {
             @Override
             public void constructRowView(View rowView, Sale object) {
                 TextView name = (TextView)rowView.findViewById(R.id.name);
@@ -243,6 +240,20 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             mDrawerList.setItemChecked(position, true);
             mDrawerLayout.closeDrawer(mDrawerList);
+            try {
+                selectItem(parent, view, position, id);
+            } catch (TagIsNullException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void selectItem(AdapterView parent, View view, int position, long id) throws TagIsNullException {
+            Tag tag = tagRegister.getObjects().get(position);
+            if(tag != null) {
+
+            } else {
+                throw new TagIsNullException("Tag was null on selectItem in NavDrawer");
+            }
         }
     }
 }

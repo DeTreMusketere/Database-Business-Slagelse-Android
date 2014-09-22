@@ -11,6 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import dk.d3m.dbs.exceptions.SocketNotConnectedException;
+
 public class CommTool {
 
     private BufferedReader reader;
@@ -27,26 +29,29 @@ public class CommTool {
      * Sends a message
      * @param message
      */
-    public void sendMessage(String message) {
-        writer.println(message);
+    public void sendMessage(String message) throws SocketNotConnectedException {
+        if(socket.isConnected()) {
+            writer.println(message);
+        } else {
+            throw new SocketNotConnectedException("Socket was not connect when trying to send a message");
+        }
     }
 
     /**
      * Receives a message as a string
      * @return message (Will be null if nothing received)
      */
-    public String receiveStringMessage() {
+    public String receiveStringMessage() throws SocketNotConnectedException {
         if(socket.isConnected()) {
             String answer = null;
             try {
                 answer = reader.readLine();
             } catch (IOException ex) {
-                System.out.println("># An error occurred while trying to receive a message from " + socket.getInetAddress());
+                throw new SocketNotConnectedException("Socket was not connect when trying to receive a string message");
             }
             return answer;
         } else {
-            System.out.println("SOCKET IS NOT CONNECTED");
-            return null;
+            throw new SocketNotConnectedException("Socket was not connect when trying to receive a string message");
         }
     }
 

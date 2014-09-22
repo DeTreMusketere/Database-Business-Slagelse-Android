@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+
+import dk.d3m.dbs.exceptions.SocketNotConnectedException;
 import dk.d3m.dbs.model.PictureRegister;
 import dk.d3m.dbs.model.SaleRegister;
 import dk.d3m.dbs.model.TagRegister;
@@ -77,8 +79,16 @@ public class Connector {
             connect();
         }
         if(socket != null && commTool != null) {
-            commTool.sendMessage("getun");
-            updateNumber = Integer.valueOf(commTool.receiveStringMessage());
+            try {
+                commTool.sendMessage("getun");
+            } catch (SocketNotConnectedException e) {
+                e.printStackTrace();
+            }
+            try {
+                updateNumber = Integer.valueOf(commTool.receiveStringMessage());
+            } catch (SocketNotConnectedException e) {
+                e.printStackTrace();
+            }
         }
         if(auto) {
             disconnect();
@@ -94,12 +104,30 @@ public class Connector {
         }
 
         if(socket != null && commTool != null) {
-            commTool.sendMessage("getobjs");
-            String answer = commTool.receiveStringMessage();
+            try {
+                commTool.sendMessage("getobjs");
+            } catch (SocketNotConnectedException e) {
+                e.printStackTrace();
+            }
+            String answer = null;
+            try {
+                answer = commTool.receiveStringMessage();
+            } catch (SocketNotConnectedException e) {
+                e.printStackTrace();
+            }
             System.out.println("ServerAnswer: " + answer);
             if(answer.equalsIgnoreCase("ok")) {
-                commTool.sendMessage(String.valueOf(updateNumber));
-                String jsonArrayString = commTool.receiveStringMessage();
+                try {
+                    commTool.sendMessage(String.valueOf(updateNumber));
+                } catch (SocketNotConnectedException e) {
+                    e.printStackTrace();
+                }
+                String jsonArrayString = null;
+                try {
+                    jsonArrayString = commTool.receiveStringMessage();
+                } catch (SocketNotConnectedException e) {
+                    e.printStackTrace();
+                }
 
                 System.out.println("JSON: " + jsonArrayString);
 
