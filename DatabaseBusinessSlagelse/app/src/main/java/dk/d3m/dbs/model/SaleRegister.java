@@ -18,10 +18,31 @@ public class SaleRegister extends Register<Sale> {
 
     private PictureRegister pictureRegister;
     private TagRegister tagRegister;
+    private ArrayList<Sale> sorted;
 
     public SaleRegister(PictureRegister pictureRegister, TagRegister tagRegister) {
         this.pictureRegister = pictureRegister;
         this.tagRegister = tagRegister;
+        sorted = new ArrayList<Sale>();
+    }
+
+    public ArrayList<Sale> getSorted() {
+        return sorted;
+    }
+
+    public void sort(Tag tag) {
+        sorted.clear();
+        if(tag != null) {
+            for(Sale s : getObjects()) {
+                for(Tag t : s.getTags()) {
+                    if(t.getId() == tag.getId()) {
+                        sorted.add(s);
+                    }
+                }
+            }
+        } else {
+            sorted.addAll(getObjects());
+        }
     }
 
     @Override
@@ -48,4 +69,5 @@ public class SaleRegister extends Register<Sale> {
             e.printStackTrace();
         }
     }
+
 }

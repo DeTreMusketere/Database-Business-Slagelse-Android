@@ -7,6 +7,7 @@ import org.json.JSONObject;
  * Created by Patrick on 02-09-2014.
  */
 public class TagRegister extends Register<Tag> {
+
     @Override
     public void create(JSONObject obj) {
         try {

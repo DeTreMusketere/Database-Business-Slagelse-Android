@@ -60,6 +60,20 @@ public abstract class Register<DATATYPE extends Data> {
     }
 
     /**
+     * Returns if register contains object with given id
+     * @param id
+     * @return true/false
+     */
+    public boolean contains(int id) {
+        for(DATATYPE t : objects) {
+            if(t.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns all objects
      * @return all objects
      */

@@ -57,6 +57,8 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         initSharedPreferences();
         createRegisters();
         FileTool.loadRegisters(this, pictureRegister, saleRegister, tagRegister);
+        saleRegister.sort(null);
+
         initSwipeToRefresh();
         initSaleListView();
         initDrawer();
@@ -77,7 +79,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
         // Put default host
         if(!prefs.contains("host")) {
-            editor.putString("host", "194.255.32.70");
+            editor.putString("host", "194.255.32.68");
         }
 
         // Put default port
@@ -105,7 +107,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initSaleListView() {
-        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getObjects()) {
+        saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getSorted()) {
             @Override
             public void constructRowView(View rowView, Sale object) {
                 TextView name = (TextView)rowView.findViewById(R.id.name);
@@ -156,7 +158,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
     }
 
     private void initRefreshHandler() {
-        refreshHandler = new RefreshHandler(this, saleAdapter, mDrawerAdapter, pictureRegister, saleRegister, tagRegister, prefs);
+        refreshHandler = new RefreshHandler(this, saleAdapter, mDrawerAdapter, mDrawerList, pictureRegister, saleRegister, tagRegister, prefs);
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -207,6 +209,10 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        System.out.println();
+        if(mDrawerList.getCheckedItemPosition() == -1) {
+            mDrawerList.setItemChecked(0, true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -248,11 +254,16 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         }
 
         private void selectItem(AdapterView parent, View view, int position, long id) throws TagIsNullException {
-            Tag tag = tagRegister.getObjects().get(position);
-            if(tag != null) {
-
+            Tag tag = mDrawerAdapter.getItem(mDrawerList.getCheckedItemPosition());
+            System.out.println(tag);
+            if(tag != null && tag.getId() != 0) {
+                saleRegister.sort(tag);
+                System.out.println(saleRegister.getSorted().size());
+                saleAdapter.notifyDataSetChanged();
             } else {
-                throw new TagIsNullException("Tag was null on selectItem in NavDrawer");
+                saleRegister.sort(null);
+                System.out.println(saleRegister.getSorted().size());
+                saleAdapter.notifyDataSetChanged();
             }
         }
     }

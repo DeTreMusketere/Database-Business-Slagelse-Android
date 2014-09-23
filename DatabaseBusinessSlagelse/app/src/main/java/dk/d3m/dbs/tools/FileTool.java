@@ -93,6 +93,10 @@ public class FileTool {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Tag tag = new Tag(0, "Alle", "Alle tilbud");
+        if(!tagRegister.contains(tag.getId())) {
+            tagRegister.getObjects().add(0, tag);
+        }
 
     }
 }
