@@ -110,11 +110,16 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         saleAdapter = new JellyArrayAdapter<Sale>(this, R.layout.sale_list, saleRegister.getSorted()) {
             @Override
             public void constructRowView(View rowView, Sale object) {
-                TextView name = (TextView)rowView.findViewById(R.id.name);
+                TextView title = (TextView)rowView.findViewById(R.id.titleTV);
                 ImageView image = (ImageView)rowView.findViewById(R.id.image);
+                TextView pris = (TextView)rowView.findViewById(R.id.prisTV);
+                TextView dealer = (TextView)rowView.findViewById(R.id.dealerTV);
+                TextView period = (TextView)rowView.findViewById(R.id.periodTV);
 
-                name.setText(object.getName());
+                title.setText(object.getName());
                 image.setImageBitmap(object.getPicture().getBitmap());
+                pris.setText(object.getPrice() + " kr.");
+                //period.setText(object.getStart().toString() + "/" + object.getEnd().toString());
             }
         };
         saleListView = (ListView)findViewById(R.id.saleListView);
