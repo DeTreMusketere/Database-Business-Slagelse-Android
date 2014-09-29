@@ -124,6 +124,14 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         };
         saleListView = (ListView)findViewById(R.id.saleListView);
         saleListView.setAdapter(saleAdapter);
+        saleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, SaleDetailsActivity.class);
+                intent.putExtra("sale", saleRegister.getObjects().get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private void initDrawer() {

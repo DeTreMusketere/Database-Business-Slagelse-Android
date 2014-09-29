@@ -1,5 +1,6 @@
 package dk.d3m.dbs.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
